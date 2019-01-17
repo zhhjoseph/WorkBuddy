@@ -1,7 +1,7 @@
 {
-  "name": "boilermaker",
+  "name": "WorkBuddy",
   "version": "1.0.0",
-  "description": "Some boilerplate code to get you started - get shakin'!",
+  "description": "Find a work buddy!",
   "engines": {
     "node": ">= 7.0.0"
   },
