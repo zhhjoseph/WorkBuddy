@@ -133,7 +133,28 @@ app.get('/oauth', function(req, res) {
 
 //basic post
 app.post('/command', function(req, res) {
-  res.send('Joe poops rainbows')
+  res.send('Joe is the spy!')
+})
+
+app.post('/users', function(req, res) {
+  request(
+    {
+      url: 'https://slack.com/api/apps.permissions.users.list', //URL to hit
+      qs: {
+        code: req.query.code,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET
+      }, //Query string data
+      method: 'GET' //Specify the method
+    },
+    function(error, response, body) {
+      if (error) {
+        console.log(error)
+      } else {
+        console.log(body)
+      }
+    }
+  )
 })
 
 const startListening = () => {
