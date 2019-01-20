@@ -7,10 +7,12 @@ const passport = require('passport')
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
 const db = require('./db')
 const sessionStore = new SequelizeStore({db})
-const {CLIENT_ID, CLIENT_SECRET} = require('../secrets')
+const {CLIENT_ID, CLIENT_SECRET, SLACK_TOKEN, BOT_TOKEN} = require('../secrets')
 const PORT = process.env.PORT || 8080
 const app = express()
 const socketio = require('socket.io')
+const {WebClient} = require('@slack/client')
+const Slackbot = require('slackbots')
 module.exports = app
 
 // This is a global Mocha hook, used for resource cleanup.
@@ -38,6 +40,79 @@ passport.deserializeUser(async (id, done) => {
     done(null, user)
   } catch (err) {
     done(err)
+  }
+})
+
+const slackToken = SLACK_TOKEN
+
+const web = new WebClient(slackToken)
+
+const bot = new Slackbot({
+  token: BOT_TOKEN,
+  name: 'WorkBuddy'
+})
+
+//bot start handler
+
+bot.on('start', () => {
+  const params = {
+    icon_emoji: ':smiley:'
+  }
+
+  bot.postMessageToChannel('buddies', 'Lets get matched up!', params)
+})
+
+// Error handler
+bot.on('error', err => console.log(err))
+
+// Message Handler
+bot.on('message', data => {
+  if (data.type !== 'message') {
+    return
+  }
+
+  console.log(data)
+})
+
+bot.on('message', async data => {
+  if (data.text === '<@UFH8A6D6V> userlist') {
+    const userdata = await bot.getUsers()
+    const {members} = userdata
+    console.log(members)
+    const memberList = members
+      .map(function(elem) {
+        return elem.real_name
+      })
+      .reduce((accum, val) => {
+        return accum + ' || ' + val
+      }, '')
+
+    bot.postMessageToChannel('buddies', memberList)
+  }
+})
+
+bot.on('message', async data => {
+  if (data.text === '<@UFH8A6D6V> pair') {
+    const userdata = await bot.getUsers()
+    const {members} = userdata
+    const memberList = members.map(function(elem) {
+      return elem.real_name
+    })
+    let arrayOne = memberList.slice()
+    let arrayTwo = memberList.slice()
+
+    arrayOne.sort(function() {
+      return 0.5 - Math.random()
+    })
+    arrayTwo.sort(function() {
+      return 0.5 - Math.random()
+    })
+    while (arrayOne.length) {
+      let pair1 = arrayOne.pop()
+      let pair2 = arrayTwo[0] == pair1 ? arrayTwo.pop() : arrayTwo.shift()
+      let finalpair = pair1 + ' is getting paired with ' + pair2 + ' !'
+      bot.postMessageToChannel('buddies', finalpair)
+    }
   }
 })
 

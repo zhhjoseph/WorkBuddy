@@ -37,6 +37,7 @@
   "author": "Fullstack Academy of Code",
   "license": "MIT",
   "dependencies": {
+    "@slack/client": "^4.8.0",
     "axios": "^0.15.3",
     "compression": "^1.7.3",
     "connect-session-sequelize": "^4.1.0",
@@ -57,6 +58,7 @@
     "redux-logger": "^2.8.1",
     "redux-thunk": "^2.3.0",
     "sequelize": "^4.38.0",
+    "slackbots": "^1.2.0",
     "socket.io": "^2.1.1",
     "travis-cli": "^1.0.9"
   },
