@@ -66,19 +66,16 @@ bot.on('start', () => {
 bot.on('error', err => console.log(err))
 
 // Message Handler
-bot.on('message', data => {
-  if (data.type !== 'message') {
-    return
-  }
+// bot.on('message', data => {
+//   if (data.type !== 'message') {
 
-  console.log(data)
-})
+//   }
+// })
 
 bot.on('message', async data => {
   if (data.text === '<@UFH8A6D6V> userlist') {
     const userdata = await bot.getUsers()
     const {members} = userdata
-    console.log(members)
     const memberList = members
       .map(function(elem) {
         return elem.real_name
@@ -96,23 +93,63 @@ bot.on('message', async data => {
     const userdata = await bot.getUsers()
     const {members} = userdata
     const memberList = members.map(function(elem) {
-      return elem.real_name
+      return elem.real_name + ',' + elem.name
     })
     let arrayOne = memberList.slice()
     let arrayTwo = memberList.slice()
-
     arrayOne.sort(function() {
       return 0.5 - Math.random()
     })
     arrayTwo.sort(function() {
       return 0.5 - Math.random()
     })
+    let pairedArr = []
     while (arrayOne.length) {
       let pair1 = arrayOne.pop()
-      let pair2 = arrayTwo[0] == pair1 ? arrayTwo.pop() : arrayTwo.shift()
-      let finalpair = pair1 + ' is getting paired with ' + pair2 + ' !'
-      bot.postMessageToChannel('buddies', finalpair)
+      let pair2 = ''
+      pairedArr.push(pair1)
+      console.log('ARRAY CONSOLE', pairedArr)
+      console.log('ARRAY ONE', arrayOne)
+      console.log('ARRAY TWO', arrayTwo)
+      if (
+        arrayTwo[0] === pair1 &&
+        !pairedArr.includes(arrayTwo[arrayTwo.length - 1])
+      ) {
+        pair2 = arrayTwo.pop()
+      } else if (
+        arrayTwo[0] !== pair1 &&
+        !pairedArr.includes(arrayTwo[arrayTwo.length - 1])
+      ) {
+        pair2 = arrayTwo.shift()
+      } else {
+        arrayTwo.pop()
+      }
+      // let pair2 = arrayTwo[0] === pair1 ? arrayTwo.pop() : arrayTwo.shift()
+      let pair1name = pair1.split(',')[0]
+      let finalpair2 = pair2.split(',')[0]
+      let finalpair = pair1name + ' is getting paired with ' + finalpair2 + ' !'
+      let pair1user = pair1.split(',')[1]
+      let pair2user = pair2.split(',')[1]
+      // console.log('PAIR USER----',pair1user+" "+ pair2user)
+      let pair1msg = 'Hi! You are paired with ' + finalpair2 + '!'
+      let pair2msg = 'Hi! You are paired with ' + pair1name + '!'
+      console.log('pair2222', finalpair2)
+      // console.log('USER ONE----',pair1user)
+      // console.log('USER TWO----', pair2user)
+      // bot.postMessageToUser(pair1user, pair1msg)
+      // bot.postMessageToUser(pair2, pair2msg)
+      if (finalpair2 === '') {
+        return
+      } else {
+        bot.postMessageToChannel('buddies', finalpair)
+      }
     }
+  }
+})
+
+bot.on('message', data => {
+  if (data.text === '<@UFH8A6D6V> Joe') {
+    bot.postMessageToUser('zhhjoseph', 'Hey there sexy')
   }
 })
 
