@@ -89,7 +89,100 @@ bot.on('message', async data => {
   }
 })
 
+bot.on('message', data => {
+  const params = {
+    text:
+      'I hope you had a great time with your pair!\nI wanted to check in on how things went. ',
+    attachments: [
+      {
+        text: 'How was your pairing experience?',
+        color: '#3AA3E3',
+        attachment_type: 'default',
+        actions: [
+          {
+            name: 'reaction',
+            text: ':heart_eyes:',
+            type: 'button',
+            value: 'heart'
+          },
+          {
+            name: 'reaction',
+            text: ':grin:',
+            type: 'button',
+            value: 'grin'
+          },
+          {
+            name: 'reaction',
+            text: ':slightly_smiling_face:',
+            type: 'button',
+            value: 'slightsmile'
+          },
+          {
+            name: 'reaction',
+            text: ':neutral_face:',
+            type: 'button',
+            value: 'neutral'
+          },
+          {
+            name: 'reaction',
+            text: ':slightly_frowning_face:',
+            type: 'button',
+            value: 'frowning'
+          }
+        ]
+      }
+    ]
+  }
+  if (data.text === '<@UFH8A6D6V> testDM') {
+    bot.postMessageToUser('zhhjoseph', 'testDM', params)
+  }
+})
+
 bot.on('message', async data => {
+  const params = {
+    icon_emoji: ':clap:',
+    text:
+      'I hope you had a great time with your pair!\nI wanted to check in on how things went. ',
+    attachments: [
+      {
+        text: 'How was your pairing experience?',
+        color: '#3AA3E3',
+        attachment_type: 'default',
+        actions: [
+          {
+            name: 'reaction',
+            text: ':heart_eyes:',
+            type: 'button',
+            value: '5'
+          },
+          {
+            name: 'reaction',
+            text: ':grin:',
+            type: 'button',
+            value: '4'
+          },
+          {
+            name: 'reaction',
+            text: ':slightly_smiling_face:',
+            type: 'button',
+            value: '3'
+          },
+          {
+            name: 'reaction',
+            text: ':neutral_face:',
+            type: 'button',
+            value: '2'
+          },
+          {
+            name: 'reaction',
+            text: ':slightly_frowning_face:',
+            type: 'button',
+            value: '1'
+          }
+        ]
+      }
+    ]
+  }
   if (data.text === '<@UFH8A6D6V> pair') {
     const userdata = await bot.getUsers()
     const {members} = userdata
@@ -98,7 +191,9 @@ bot.on('message', async data => {
     })
     if (memberList.length % 2 !== 0) {
       let unpairedMember = memberList.pop().split(',')[0]
-      bot.postMessageToChannel('buddies', unpairedMember)
+      let unpairedMessage =
+        'Sorry ' + unpairedMember + "! We'll try another time!"
+      bot.postMessageToChannel('buddies', unpairedMessage)
     }
     let arrayOne = memberList.slice()
     let arrayTwo = memberList.slice()
@@ -118,7 +213,7 @@ bot.on('message', async data => {
       let pair1user = pair1.split(',')[1]
       let pair2user = pair2.split(',')[1]
       let pair1Id = pair1.split(',')[2]
-      console.log(pair1Id)
+
       let pair2Id = pair2.split(',')[2]
       let pair1msg = 'Hi! You are paired with ' + pair2Id + '!'
       let pair2msg = 'Hi! You are paired with ' + pair1Id + '!'
@@ -129,7 +224,9 @@ bot.on('message', async data => {
       ) {
         bot.postMessageToChannel('buddies', finalpair)
         bot.postMessageToUser(pair1user, pair1msg)
+        bot.postMessageToUser(pair1user, 'test', params)
         bot.postMessageToUser(pair2user, pair2msg)
+        bot.postMessageToUser(pair2user, 'test', params)
         pairedArr.push(pair1)
         pairedArr.push(pair2)
       } else if (pair1 === pair2) {
