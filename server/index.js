@@ -59,7 +59,11 @@ bot.on('start', () => {
     icon_emoji: ':smiley:'
   }
 
-  bot.postMessageToChannel('buddies', 'Lets get matched up!', params)
+  bot.postMessageToChannel(
+    'buddies',
+    'Lets get matched up! Type `help` for more options!',
+    params
+  )
 })
 
 // Error handler
@@ -89,6 +93,17 @@ bot.on('message', async data => {
   }
 })
 
+bot.on('message', async data => {
+  const helpparams = {
+    text:
+      'Hello! Welcome to Work Buddy! Below are the commands in case you forget!\n`userlist`- Lists all users\n`pair` - Pair users in the channel!'
+  }
+  if (data.text === '<@UFH8A6D6V> help') {
+    const users = await bot.getUsers()
+    const user = users.members.filter(elem => elem.id === data.user)
+    bot.postMessageToUser(user[0].name, 'hi', helpparams)
+  }
+})
 bot.on('message', data => {
   const params = {
     text:
