@@ -6,6 +6,7 @@ const session = require('express-session')
 const passport = require('passport')
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
 const db = require('./db')
+const {User} = require('./db/models')
 const sessionStore = new SequelizeStore({db})
 const {CLIENT_ID, CLIENT_SECRET, SLACK_TOKEN, BOT_TOKEN} = require('../secrets')
 const PORT = process.env.PORT || 8080
@@ -70,11 +71,6 @@ bot.on('start', () => {
 bot.on('error', err => console.log(err))
 
 // Message Handler
-// bot.on('message', data => {
-//   if (data.type !== 'message') {
-
-//   }
-// })
 
 bot.on('message', async data => {
   if (data.text === '<@UFH8A6D6V> userlist') {
@@ -94,9 +90,24 @@ bot.on('message', async data => {
 })
 
 bot.on('message', async data => {
+  if (data.text === '<@UFH8A6D6V> create database') {
+    const userdata = await bot.getUsers()
+    const {members} = userdata
+    let count = 0
+    await members.forEach(element => {
+      count++
+      User.create({
+        name: element.name
+      })
+    })
+    console.log(count)
+  }
+})
+
+bot.on('message', async data => {
   const helpparams = {
     text:
-      'Hello! Welcome to Work Buddy! Below are the commands in case you forget!\n`userlist`- Lists all users\n`pair` - Pair users in the channel!'
+      'Hello! Welcome to Work Buddy! Below are the commands in case you forget!\n`userlist`- Lists all users\n`pair` - Pair users in the channel!\n`create database` - Populate database with users'
   }
   if (data.text === '<@UFH8A6D6V> help') {
     const users = await bot.getUsers()
