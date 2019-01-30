@@ -45,7 +45,7 @@ passport.deserializeUser(async (id, done) => {
 })
 
 const slackToken = SLACK_TOKEN
-
+console.log(slackToken)
 const web = new WebClient(slackToken)
 
 const bot = new Slackbot({
